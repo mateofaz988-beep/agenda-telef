@@ -1,0 +1,187 @@
+<app-navbar></app-navbar>
+
+<section class="directorio-page">
+
+  <header class="directorio-header">
+
+    <div class="header-badge">
+      <i class="bi bi-telephone-fill"></i>
+      Directorio Institucional
+    </div>
+
+    <h1>Contactos INAMHI</h1>
+
+    <p>
+      Busca funcionarios por nombre, unidad, provincia o extensión.
+    </p>
+
+  </header>
+
+  <main class="directorio-container">
+
+    <section class="search-panel">
+
+      <div class="search-box">
+        <i class="bi bi-search"></i>
+
+        <input
+          type="text"
+          placeholder="Buscar contacto..."
+          [(ngModel)]="searchText"
+        >
+      </div>
+
+      <div class="filters">
+
+        <button
+          type="button"
+          class="filter-btn"
+          [class.active]="ciudadSeleccionada === 'Todos'"
+          (click)="filtrarCiudad('Todos')"
+        >
+          <i class="bi bi-grid-fill"></i>
+          Todos
+        </button>
+
+        <button
+          type="button"
+          class="filter-btn"
+          *ngFor="let ciudad of ciudadesDisponibles"
+          [class.active]="ciudadSeleccionada === ciudad"
+          (click)="filtrarCiudad(ciudad)"
+        >
+          <i class="bi bi-geo-alt-fill"></i>
+          {{ ciudad }}
+        </button>
+
+      </div>
+
+    </section>
+
+    <section class="result-title">
+      <div>
+        <h2>Resultados</h2>
+
+        <span>
+          {{ contactosFiltrados.length }} contacto(s)
+        </span>
+      </div>
+    </section>
+
+    <section
+      class="contacts-grid"
+      *ngIf="contactosFiltrados.length > 0; else sinResultados"
+    >
+
+      <article
+        class="contact-card compact"
+        *ngFor="let contacto of contactosFiltrados"
+        [class.open]="estaAbierto(contacto.id)"
+      >
+
+        <div class="card-header">
+
+          <div class="user-section">
+
+            <div class="avatar user-logo">
+              <i class="bi bi-person-fill"></i>
+            </div>
+
+            <div class="user-info">
+
+              <h3>
+                {{ contacto.nombres }}
+                {{ contacto.apellidos }}
+              </h3>
+
+              <p class="cargo">
+                {{ contacto.cargo }}
+              </p>
+
+              <span class="unidad">
+                {{ contacto.unidad }}
+              </span>
+
+            </div>
+
+          </div>
+
+          <button
+            type="button"
+            class="toggle-btn"
+            (click)="toggleContacto(contacto.id)"
+          >
+            <i
+              class="bi"
+              [class.bi-chevron-down]="!estaAbierto(contacto.id)"
+              [class.bi-chevron-up]="estaAbierto(contacto.id)"
+            ></i>
+          </button>
+
+        </div>
+
+        <div
+          class="extra-info"
+          *ngIf="estaAbierto(contacto.id)"
+        >
+
+          <div class="info-item">
+            <i class="bi bi-geo-alt-fill"></i>
+            <span>{{ contacto.ciudad }}</span>
+          </div>
+
+          <div class="info-item">
+            <i class="bi bi-telephone-fill"></i>
+
+            <span>
+              {{ contacto.telefono }}
+
+              <b *ngIf="contacto.extension">
+                — Ext. {{ contacto.extension }}
+              </b>
+            </span>
+          </div>
+
+          <div
+            class="info-item"
+            *ngIf="contacto.correo"
+          >
+            <i class="bi bi-envelope-fill"></i>
+            <span>{{ contacto.correo }}</span>
+          </div>
+
+          <div
+            class="info-item"
+            *ngIf="contacto.observacion"
+          >
+            <i class="bi bi-chat-left-text-fill"></i>
+            <span>{{ contacto.observacion }}</span>
+          </div>
+
+        </div>
+
+      </article>
+
+    </section>
+
+    <ng-template #sinResultados>
+
+      <section class="empty-state">
+
+        <div class="empty-icon">
+          <i class="bi bi-search"></i>
+        </div>
+
+        <h3>Sin resultados</h3>
+
+        <p>
+          No se encontraron contactos.
+        </p>
+
+      </section>
+
+    </ng-template>
+
+  </main>
+
+</section>

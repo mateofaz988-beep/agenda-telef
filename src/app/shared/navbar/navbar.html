@@ -1,0 +1,20 @@
+<header class="navbar-pill">
+  <a routerLink="/" class="brand">
+    <i class="bi bi-cloud-sun"></i>
+    <span>INAMHI</span>
+  </a>
+
+  <nav>
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+      Inicio
+    </a>
+
+    <a routerLink="/directorio" routerLinkActive="active">
+      Directorio
+    </a>
+
+    <a routerLink="/admin/login" routerLinkActive="active">
+      Admin
+    </a>
+  </nav>
+</header>

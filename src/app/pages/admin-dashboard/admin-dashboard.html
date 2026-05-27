@@ -1,0 +1,462 @@
+<section class="admin-page">
+
+  <header class="admin-header">
+
+    <div class="header-info">
+      <span class="system-badge">
+        <i class="bi bi-cloud-fill"></i>
+        INAMHI
+      </span>
+
+      <h1>Panel Administrativo</h1>
+
+      <p>
+        Gestión institucional de contactos telefónicos.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="logout-btn"
+      (click)="logout()"
+    >
+      <i class="bi bi-box-arrow-right"></i>
+      Cerrar sesión
+    </button>
+
+  </header>
+
+  <main class="admin-content">
+
+    <section class="stats-grid">
+
+      <article class="stat-card">
+        <div class="stat-icon blue">
+          <i class="bi bi-people-fill"></i>
+        </div>
+
+        <div class="stat-info">
+          <strong>{{ totalContactos }}</strong>
+          <span>Total contactos</span>
+        </div>
+      </article>
+
+      <article class="stat-card">
+        <div class="stat-icon green">
+          <i class="bi bi-check-circle-fill"></i>
+        </div>
+
+        <div class="stat-info">
+          <strong>{{ contactosActivos }}</strong>
+          <span>Activos</span>
+        </div>
+      </article>
+
+      <article class="stat-card">
+        <div class="stat-icon orange">
+          <i class="bi bi-geo-alt-fill"></i>
+        </div>
+
+        <div class="stat-info">
+          <strong>{{ ciudadesRegistradas }}</strong>
+          <span>Provincias</span>
+        </div>
+      </article>
+
+      <article class="stat-card">
+        <div class="stat-icon purple">
+          <i class="bi bi-building-fill"></i>
+        </div>
+
+        <div class="stat-info">
+          <strong>{{ unidadesRegistradas }}</strong>
+          <span>Unidades</span>
+        </div>
+      </article>
+
+    </section>
+
+    <section class="toolbar">
+
+      <div class="search-box">
+        <i class="bi bi-search"></i>
+
+        <input
+          type="text"
+          placeholder="Buscar contacto..."
+          [(ngModel)]="searchText"
+          [disabled]="cargandoContactos"
+        >
+      </div>
+
+      <button
+        type="button"
+        class="add-btn"
+        (click)="agregar()"
+        [disabled]="cargandoContactos"
+      >
+        <i class="bi bi-plus-circle-fill"></i>
+        Nuevo contacto
+      </button>
+
+    </section>
+
+    <section class="table-card">
+
+      <div class="table-header">
+        <div>
+          <h2>Contactos registrados</h2>
+
+          <span *ngIf="!cargandoContactos">
+            {{ contactosFiltrados.length }}
+            resultado(s)
+          </span>
+
+          <span *ngIf="cargandoContactos">
+            Cargando información...
+          </span>
+        </div>
+      </div>
+
+      <div
+        class="empty-table loading-state"
+        *ngIf="cargandoContactos"
+      >
+        <i class="bi bi-arrow-repeat"></i>
+
+        <h3>Cargando contactos...</h3>
+
+        <p>
+          Obteniendo registros desde la base de datos.
+        </p>
+      </div>
+
+      <div
+        class="empty-table"
+        *ngIf="!cargandoContactos && contactosFiltrados.length === 0"
+      >
+        <i class="bi bi-person-x-fill"></i>
+
+        <h3>Sin contactos</h3>
+
+        <p>
+          No existen registros disponibles.
+        </p>
+      </div>
+
+      <div
+        class="table-responsive"
+        *ngIf="!cargandoContactos && contactosFiltrados.length > 0"
+      >
+
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Funcionario</th>
+              <th>Cargo</th>
+              <th>Unidad</th>
+              <th>Provincia</th>
+              <th>Teléfono</th>
+              <th>Correo</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let contacto of contactosFiltrados; let i = index">
+
+              <td>
+                {{ i + 1 }}
+              </td>
+
+              <td>
+                <div class="user-info">
+                  <div class="user-avatar">
+                    {{
+                      (contacto.nombres || '').charAt(0)
+                    }}{{
+                      (contacto.apellidos || '').charAt(0)
+                    }}
+                  </div>
+
+                  <div>
+                    <strong>
+                      {{ contacto.nombres }}
+                      {{ contacto.apellidos }}
+                    </strong>
+
+                    <small>
+                      Ext. {{ contacto.extension || '---' }}
+                    </small>
+                  </div>
+                </div>
+              </td>
+
+              <td>{{ contacto.cargo }}</td>
+
+              <td>{{ contacto.unidad }}</td>
+
+              <td>
+                <span class="province-badge">
+                  <i class="bi bi-geo-alt-fill"></i>
+                  {{ contacto.ciudad }}
+                </span>
+              </td>
+
+              <td>{{ contacto.telefono }}</td>
+
+              <td>{{ contacto.correo || '-' }}</td>
+
+              <td>
+                <span
+                  class="estado"
+                  [class.inactivo]="contacto.estado === 'inactivo'"
+                >
+                  {{ contacto.estado }}
+                </span>
+              </td>
+
+              <td>
+                <div class="actions">
+                  <button
+                    type="button"
+                    class="edit"
+                    (click)="editar(contacto)"
+                  >
+                    <i class="bi bi-pencil-fill"></i>
+                  </button>
+
+                  <button
+                    type="button"
+                    class="delete"
+                    (click)="eliminar(contacto)"
+                  >
+                    <i class="bi bi-trash-fill"></i>
+                  </button>
+                </div>
+              </td>
+
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <section
+    class="modal-backdrop-custom"
+    *ngIf="modalAbierto"
+  >
+    <div class="contact-modal">
+
+      <header class="modal-header-custom">
+        <div>
+          <span>
+            <i class="bi bi-person-lines-fill"></i>
+            Contacto
+          </span>
+
+          <h2>
+            {{ modoEdicion ? 'Editar contacto' : 'Nuevo contacto' }}
+          </h2>
+        </div>
+
+        <button
+          type="button"
+          class="close-modal"
+          (click)="cerrarModal()"
+        >
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </header>
+
+      <form
+        class="modal-form"
+        (ngSubmit)="guardarContacto()"
+      >
+
+        <div class="form-grid">
+
+          <div class="form-group">
+            <label>Nombres *</label>
+
+            <input
+              type="text"
+              name="nombres"
+              [(ngModel)]="contactoForm.nombres"
+              (input)="soloLetrasInput('nombres')"
+              placeholder="Nombres"
+              maxlength="120"
+              autocomplete="off"
+            >
+          </div>
+
+          <div class="form-group">
+            <label>Apellidos *</label>
+
+            <input
+              type="text"
+              name="apellidos"
+              [(ngModel)]="contactoForm.apellidos"
+              (input)="soloLetrasInput('apellidos')"
+              placeholder="Apellidos"
+              maxlength="120"
+              autocomplete="off"
+            >
+          </div>
+
+          <div class="form-group">
+            <label>Cargo *</label>
+
+            <input
+              type="text"
+              name="cargo"
+              [(ngModel)]="contactoForm.cargo"
+              placeholder="Cargo institucional"
+              maxlength="150"
+              autocomplete="off"
+            >
+          </div>
+
+          <div class="form-group">
+            <label>Unidad *</label>
+
+            <input
+              type="text"
+              name="unidad"
+              [(ngModel)]="contactoForm.unidad"
+              placeholder="Unidad administrativa"
+              maxlength="150"
+              autocomplete="off"
+            >
+          </div>
+
+          <div class="form-group">
+            <label>Provincia *</label>
+
+            <select
+              name="ciudad"
+              [(ngModel)]="contactoForm.ciudad"
+            >
+              <option value="">Seleccione una provincia</option>
+
+              <option
+                *ngFor="let provincia of provinciasEcuador"
+                [value]="provincia"
+              >
+                {{ provincia }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Teléfono *</label>
+
+            <input
+              type="text"
+              name="telefono"
+              [(ngModel)]="contactoForm.telefono"
+              (input)="telefonoInput()"
+              (keydown)="bloquearNoNumeros($event)"
+              placeholder="0999999999"
+              maxlength="10"
+              inputmode="numeric"
+              autocomplete="off"
+            >
+          </div>
+
+          <div class="form-group">
+            <label>Extensión</label>
+
+            <input
+              type="text"
+              name="extension"
+              [(ngModel)]="contactoForm.extension"
+              (input)="extensionInput()"
+              (keydown)="bloquearExtension($event)"
+              placeholder="101"
+              maxlength="5"
+              inputmode="numeric"
+              autocomplete="off"
+            >
+          </div>
+
+          <div class="form-group">
+            <label>Correo</label>
+
+            <input
+              type="email"
+              name="correo"
+              [(ngModel)]="contactoForm.correo"
+              (input)="correoInput()"
+              (keydown)="bloquearEspaciosCorreo($event)"
+              placeholder="correo@inamhi.gob.ec"
+              maxlength="120"
+              autocomplete="off"
+            >
+          </div>
+
+          <div class="form-group">
+            <label>Estado *</label>
+
+            <select
+              name="estado"
+              [(ngModel)]="contactoForm.estado"
+            >
+              <option value="activo">Activo</option>
+              <option value="inactivo">Inactivo</option>
+            </select>
+          </div>
+
+          <div class="form-group full">
+            <label>Observación</label>
+
+            <textarea
+              name="observacion"
+              [(ngModel)]="contactoForm.observacion"
+              placeholder="Observación opcional..."
+              rows="3"
+            ></textarea>
+          </div>
+
+        </div>
+
+        <div
+          class="form-error"
+          *ngIf="errorFormulario"
+        >
+          <i class="bi bi-exclamation-circle-fill"></i>
+          {{ errorFormulario }}
+        </div>
+
+        <footer class="modal-actions">
+          <button
+            type="button"
+            class="cancel-btn"
+            (click)="cerrarModal()"
+            [disabled]="guardando"
+          >
+            Cancelar
+          </button>
+
+          <button
+            type="submit"
+            class="save-btn"
+            [disabled]="guardando"
+          >
+            <i class="bi bi-check-circle-fill"></i>
+            {{ guardando ? 'Guardando...' : (modoEdicion ? 'Actualizar' : 'Guardar') }}
+          </button>
+        </footer>
+
+      </form>
+
+    </div>
+  </section>
+
+</section>

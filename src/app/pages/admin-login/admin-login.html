@@ -1,0 +1,132 @@
+<section class="login-page">
+
+  <div class="background-shapes">
+    <span class="shape shape-1"></span>
+    <span class="shape shape-2"></span>
+    <span class="shape shape-3"></span>
+  </div>
+
+  <a routerLink="/" class="back-link">
+    <i class="bi bi-arrow-left"></i>
+    Volver al inicio
+  </a>
+
+  <div class="login-wrapper">
+
+    <section class="left-panel">
+
+       <div class="hero-logo">
+        <img src="/logo_inamhi.png" alt="Logo INAMHI" class="logo-img">
+      </div>
+
+      <h1>
+        Agenda Telefónica
+        <span>Institucional</span>
+      </h1>
+
+      <p>
+        Plataforma institucional para la administración y consulta
+        del directorio oficial de contactos del INAMHI.
+      </p>
+
+      <div class="features">
+
+        
+
+      </div>
+
+    </section>
+
+    <section class="login-card">
+
+      <div class="card-header">
+
+        <div class="icon-box">
+          <i class="bi bi-shield-lock"></i>
+        </div>
+
+        <h2>Acceso Administrador</h2>
+
+        <p>
+          Ingrese sus credenciales para acceder al panel administrativo.
+        </p>
+
+      </div>
+
+      <form (ngSubmit)="login()">
+
+        <div class="form-group">
+
+          <label>Usuario</label>
+
+          <div class="input-box">
+            <i class="bi bi-person"></i>
+
+            <input
+              type="text"
+              name="usuario"
+              [(ngModel)]="usuario"
+              placeholder="Ingrese el usuario"
+              autocomplete="username"
+            >
+          </div>
+
+        </div>
+
+        <div class="form-group">
+
+          <label>Contraseña</label>
+
+          <div class="input-box">
+            <i class="bi bi-lock"></i>
+
+            <input
+              type="password"
+              name="password"
+              [(ngModel)]="password"
+              placeholder="Ingrese la contraseña"
+              autocomplete="current-password"
+            >
+          </div>
+
+        </div>
+
+        <div class="error-box" *ngIf="error">
+          <i class="bi bi-exclamation-circle"></i>
+          {{ error }}
+        </div>
+
+        <button
+          type="submit"
+          class="login-btn"
+          [disabled]="cargando"
+        >
+          <i class="bi bi-box-arrow-in-right"></i>
+
+          {{
+            cargando
+              ? 'Ingresando...'
+              : 'Iniciar sesión'
+          }}
+        </button>
+
+      </form>
+
+      <div class="footer-info">
+
+        <span>
+          <i class="bi bi-shield-check"></i>
+          Sistema institucional seguro
+        </span>
+
+        <span>
+          v1.0 Agenda INAMHI
+        </span>
+
+      </div>
+
+    </section>
+
+  </div>
+
+</section>
